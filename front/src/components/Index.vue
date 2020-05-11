@@ -1,0 +1,189 @@
+<template>
+  <div id="index">
+    <div class="container">
+      <div class="item" v-for="(item,index) in itemList" :key="index" @click="turnto(index)">
+        <img :src="item.imgUrl" alt />
+        {{item.title}}
+      </div>
+      <el-upload
+        class="upload-demo"
+        ref="upload"
+        action="http://localhost:80/upload"
+        multiple
+        :data="uplist"
+        :file-list="fileList"
+        :on-success="fileSuccess"
+        :on-error	="fileFail"
+        :on-change="handleChange"
+        :auto-upload="false"
+      >
+        <el-button style="margin-top:1em" slot="trigger" size="small" type="primary">选取文件</el-button>
+        <el-button
+          style="margin-left: 10px;margin-top:1em;"
+          size="small"
+          type="success"
+          @click="submitUpload"
+        >上传到服务器</el-button>
+        <div slot="tip" class="el-upload__tip" style="color:red;font-size:1.7em;">只能上传不能超过500MB</div>
+      </el-upload>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      fileList:[],
+      uplist:{},
+      itemList: [
+        {
+          imgUrl: require("@/assets/icon/word.png"),
+          title: "文档"
+        },
+        {
+          imgUrl: require("@/assets/icon/music.png"),
+          title: "音乐"
+        },
+        {
+          imgUrl: require("@/assets/icon/video.png"),
+          title: "视频"
+        },
+        {
+          imgUrl: require("@/assets/icon/blog.png"),
+          title: "博客"
+        },
+        {
+          imgUrl: require("@/assets/icon/display.png"),
+          title: "作品"
+        },
+        {
+          imgUrl: require("@/assets/icon/self.png"),
+          title: "个人"
+        }
+      ]
+    };
+  },
+  methods: {
+    handleChange(file, fileList){
+      this.uplist = {
+        file:fileList,
+        username:'mikasa'
+      }
+    },
+    fileSuccess(response,file,fileList){
+        console.log(response)
+        console.log(response.regEX);
+        if(!response.regEX){
+          this.$msgbox({
+              title: "提示",
+              message: "正则校验失败",
+              type: "error"
+            });
+        }
+    },
+    fileFail(err,file,fileList){
+        console.log(err)
+    },
+    submitUpload(){
+        this.$refs.upload.submit();
+    },
+    turnto(index) {
+      switch (index) {
+        case 0:
+          this.$router.push("/word");
+          break;
+        case 1:
+          this.$router.push("/music");
+          break;
+        case 2:
+          this.$router.push("/video");
+          break;
+        case 3:
+          this.$router.push("/blog");
+          break;
+        case 4:
+          this.$router.push("/display");
+          break;
+        case 5:
+          this.$router.push("/self");
+          break;
+      }
+    }
+  }
+};
+</script>
+
+<style lang="less" scoped>
+#index {
+  width: 100%;
+  //height: 100vh;
+  position: absolute;
+  font-size: 10px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-image: url(../assets/bg/2.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  .container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    .upload-demo {
+      width: 40%;
+      background-color: rgb(88, 105, 206);
+      text-align: center;
+      height: 20em;
+      line-height: 100%;
+      border-radius: 1em;
+      /deep/.el-upload-list el-upload-list--text{
+        color: cyan;
+        font-weight: bolder;
+      }
+    }
+    .item {
+      width: 23%;
+      height: 5.5em;
+      margin-right: 2.5em;
+      margin-bottom: 2.5em;
+      background-color: rgba(20, 221, 171, 0.9);
+      border-radius: 0.5em;
+      line-height: 5.5em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 2.5em;
+      color: rgb(223, 23, 100);
+      font-weight: bolder;
+      transition: 0.35s;
+      img {
+        width: 25%;
+        margin-right: 0.5em;
+      }
+    }
+    .item:hover {
+      background-color: rgba(225, 170, 229, 0.9);
+    }
+  }
+}
+@media screen and (max-width: 475px) {
+  #index {
+    font-size: 5px;
+    .container {
+      width: 80%;
+      .item {
+        width: 40%;
+        margin-right: 1.5em;
+      }
+    }
+  }
+}
+</style>
